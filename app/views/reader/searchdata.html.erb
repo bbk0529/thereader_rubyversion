@@ -1,2 +1,102 @@
-<h1>Reader#searchdata</h1>
-<p>Find me in app/views/reader/searchdata.html.erb</p>
+
+<script>
+$(document).ready(function() {
+
+    $("#sender").change(function(){
+    	$(location).attr('href','/reader/searchdata?keyword=' + $('#sender').val());
+    })
+
+    $("#emaildate").change(function(){
+    	$(location).attr('href','/reader/searchdata?keyword=' + $('#emaildate').val());
+    })
+
+
+	$('#keyword').keypress(function(e){
+		if (e.which === 13){
+			if ($('#keyword').val()=='') {
+					alert('please enter your keyword(s)');
+			}
+			else
+				$(location).attr('href','/reader/searchdata?keyword=' + $('#keyword').val());
+		}
+	});
+
+    $("#search").click(function() {
+		$(location).attr('href','/reader/searchdata?keyword=' + $('#keyword').val());
+    });
+
+    $("#multidetail").click(function() {
+    	let param="";
+    	var i=0;
+		$(".chkclass :checked").each(function(){
+			param+=$(this).val() + ',';
+			i++;
+		});
+		if (i<2) {
+			alert('Needs at least 2 emails for merging');
+		}	else {
+				$(location).attr('href','multidetail?param=' + param);
+	    	}
+    });
+    $('#chkall').click(function () {
+        $('input:checkbox').prop('checked', this.checked);
+    });
+
+});
+</script>
+
+	<div class="row">
+	 	<div class="col-sm-9 col-xs-9">
+	 		<h2> A Bot Reading Emails </h2>
+			<h4> Reading emails, analyzing personalities, retreiving insights for you. </h4>
+	 	</div>
+	 	<div class="col-sm-3 col-xs-3">
+	 		<a href="/">
+	 		<img src="<%= asset_path( 'title.png' ) %>" class="img-rounded" style="width:100%">
+	 		</a>
+	 	</div>
+	</div>
+	<div class="col-sm-12 col-xs-12">
+	<table class="table table-hover">
+	   <thead>
+		      <tr>
+	    	<th class="col-md-1 col-sm-1 col-xs-1"><input type="checkbox" id="chkall" ></th>
+	    	<th class="col-md-1 col-sm-1 col-xs-1">NO</th>
+			<th class="col-md-1 col-sm-1 col-xs-1">SENDER</th>
+			<th class="col-md-2 col-sm-2 col-xs-2">DATE</th>
+			<th class="col-md-4 col-sm-4 col-xs-4">SUBJECT</th>
+			<th class="col-md-1 col-sm-1 col-xs-1">WORDS</th>
+		</tr>
+		</thead>
+		<tbody>
+
+     <% @emails.each do |email| %>
+		 <tr class="chkclass">
+			<td><input type="checkbox" id="chk" value="<%=email.id%>"></td>
+			<td onclick="window.location.assign('/reader/detail?id=<%=email.id%>');"><%=email.id%></td>
+			<td onclick="window.location.assign('/reader/detail?id=<%=email.id%>');"><%=email.sender%></td>
+			<td onclick="window.location.assign('/reader/detail?id=<%=email.id%>');" class="col-xs-2"><%=email.date%></td>
+			<td onclick="window.location.assign('/reader/detail?id=<%=email.id%>');"><%=email.subject%></td>
+			<td onclick="window.location.assign('/reader/detail?id=<%=email.id%>');"><%=email.wordcount%></td>
+		</tr>
+    <% end %>
+		</tbody>
+	</table>
+	</div>
+	</div>
+
+
+	<div class="row">
+		<div class="col-sm-3 col-xs-3"></div>
+		<div class="col-sm-6 col-xs-6"><input class="form-control" id="keyword" name="keyword" type="text" autofocus/></div>
+		<div class="col-sm-1 col-xs-1"><button id="search" class="btn btn-default">SEARCH </button></div>
+	</div>
+
+	<br/><br/>
+	<div class="row">
+		<div class="col-sm-12 col-xs-12" style="text-align: center;">
+			<button type="button" id="multidetail" class="btn btn-primary"/>MERGE</button></a>
+			<button id="submit" type="button" class="btn btn-default" onclick="javascript:history.back()"/>BACK</button>
+			<a href="./"><button type="button" id="home" class="btn btn-default"/>HOME</button></a>
+		</div>
+	</div>

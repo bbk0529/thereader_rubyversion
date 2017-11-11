@@ -1,4 +1,4 @@
-<head>
+<!-- <head>
 <script type="text/javascript">
 	$(document).ready(function() {
 		$('#submit').click(function() {
@@ -14,7 +14,7 @@
 
 	function watsonNLU(param){
 		$.ajax({
-			url : "insertEmail",
+			url : "/reader/insert_email",
 			type : "POST",
 			data : param,
 			/* contentType : "application/json; charset=UTF-8", */
@@ -34,10 +34,10 @@
 
 </script>
 
-</head>
+</head> -->
 
 <body>
-<form name="form" method="post">
+<form action="/reader/insert_email">
 	<div class="container">
 		<div class="row">
 			<div class="col-sm-9 col-xs-9">
@@ -85,7 +85,7 @@
 		</div>
 		<div class="row">
 		<div class="col-sm-12" style="text-align: center;">
-			<button id="submit" type="button" class="btn btn-primary" />SUBMIT</button>
+			<input id="submit" type="submit" class="btn btn-primary" /></button>
 			<button type="button" class="btn btn-default" onclick="javascript:history.back()"/>BACK</button>
 			<a href="./"><button type="button" id="home" class="btn btn-default"/>HOME</button></a>
 		</div>
