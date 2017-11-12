@@ -10,15 +10,7 @@ var data1 = new Array();
 		    "bindto": "#chart",
 		    "data": {
 		        "columns": [
-		        ],
-		        "types": {
-		        	"data1": "step",
-		          "data2": "area-step"
-		        },
-		        "colors": {
-		          data1: "grey",
-		          data2: "black"
-		        }
+		        ]
 		    },
 
 		    "legend": {
@@ -27,6 +19,10 @@ var data1 = new Array();
 			"axis": {
 			    "x": {
 			      "type": "category",
+						"tick": {
+									"rotate": 90,
+									"multiline": false
+							},
 			      "categories": [
 			    	"Openness",
 			    	"Adventurousness",

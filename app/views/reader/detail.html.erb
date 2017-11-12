@@ -168,22 +168,24 @@
 					    "data": {
 					        "columns": [
 					        ],
-					        "types": {
-					        	"data1": "step",
-					            "data2": "area-step"
-					        },
+					        "type": "area-step",
 					        "colors": {
 					          data1: "grey",
 					          data2: "black"
 					        }
 					    },
 
-					    "legend": {
-					        "position": "right"
-					     },
+							"legend": {
+    						"show": false
+  							},
 						"axis": {
 						    "x": {
 						      "type": "category",
+									"tick": {
+        								"rotate": 90,
+        								"multiline": false
+      							},
+									"height": 130,
 						      "categories": [
 						    	"Openness",
 						    	"Adventurousness",
