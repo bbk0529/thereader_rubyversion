@@ -51,6 +51,9 @@ group :development do
   gem 'rails_db'
   gem 'awesome_print'
   gem 'pry'
+  gem 'excon'
+  gem 'json'
+  gem 'recursive-open-struct'
 
 end
 

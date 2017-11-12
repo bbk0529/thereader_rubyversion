@@ -1,2 +1,244 @@
-<h1>Reader#summary</h1>
-<p>Find me in app/views/reader/summary.html.erb</p>
+<script type="text/javascript">
+var data1 = new Array();
+	var data2 = new Array();
+	data1=[];
+	data2=[];
+
+	$(function() {
+
+		var chart =bb.generate({
+		    "bindto": "#chart",
+		    "data": {
+		        "columns": [
+		        ],
+		        "types": {
+		        	"data1": "step",
+		          "data2": "area-step"
+		        },
+		        "colors": {
+		          data1: "grey",
+		          data2: "black"
+		        }
+		    },
+
+		    "legend": {
+		        "position": "right"
+		     },
+			"axis": {
+			    "x": {
+			      "type": "category",
+			      "categories": [
+			    	"Openness",
+			    	"Adventurousness",
+			    	"Artistic_interests",
+			    	"Emotionality",
+			    	"Imagination",
+			    	"Intellect",
+			    	"Authority_challenging",
+			    	"Conscientiousness",
+			    	"Achievement_striving",
+			    	"Cautiousness",
+			    	"Dutifulness",
+			    	"Orderliness",
+			    	"Self_discipline",
+			    	"Self_efficacy",
+			    	"Extraversion",
+			    	"Activity_level",
+			    	"Assertiveness",
+			    	"Cheerfulness",
+			    	"Excitement_seeking",
+			    	"Outgoing",
+			    	"Gregariousness",
+			    	"Agreeableness",
+			    	"Altruism",
+			    	"Cooperation",
+			    	"Modesty",
+			    	"Uncompromising",
+			    	"Sympathy",
+			    	"Trust",
+			    	"Emotional_range",
+			    	"Fiery",
+			    	"Prone_to_worry",
+			    	"Melancholy",
+			    	"Immoderation",
+			    	"Self_consciousness",
+			    	"Susceptible_to_stress"
+			      ]
+			    }
+		 }
+		}); // var chart
+
+		$("#sender1").change(function() {
+			var sender = $('#sender1').val();
+			$('#name1').text(sender);
+			readPI(sender, "data1", chart);
+		}); //#sender1
+
+		$("#sender2").change(function() {
+			var sender = $('#sender2').val();
+			$('#name2').text(sender);
+			readPI(sender, "data2", chart);
+		}); //#sender2
+	}); // $(function)
+
+
+	function readPI(sender, window, chart) {
+		console.log('function readPI' + sender);
+		$.ajax({
+			url : "/reader/readPI",
+			type : "GET",
+			async : false,
+			data : 'sender=' + sender,
+			success : function(data) {
+				console.log(data);
+				document.getElementById(window).innerHTML = parser(data);
+
+				if (window=="data1") { data1=datainput(data);};
+				if (window=="data2") { data2=datainput(data);};
+				chart.category(2, "Category 3");
+				chart.load({
+				    columns: [
+				       data1,
+				       data2
+				   ]
+				 }); // chart.load
+			},
+			error : function(request, status, error) {
+				console.log("code:" + request.status + "\n" + "message:"+ request.responseText + "\n" + "error:" + error);
+			}
+		});
+	};
+
+	function datainput(data){
+		var arr = new Array();
+		$.each(data, function (key,val){
+			if (key !='id' && key!='created_at' && key!='updated_at') {
+				arr.push(val)
+			};
+		});
+		console.log(arr);
+		return arr;
+	};
+
+	function parser(data) {
+		var a='';
+
+
+		a+="<table class='table'>";
+		$.each(data, function(key, val) {
+			if (key !='id' && key!='created_at' && key!='updated_at' && key!='sender') {
+				if (val>0.9){
+					a += "<tr>";
+					a += "<td>" + key + "</td>";
+					a += "<td>" + val + "</td>";
+					a += "<td>" + barchart(val, "green") +"</td>";
+					a += "</tr>";
+				} else if (val>0.7) {
+					a += "<tr>";
+					a += "<td>" + key + "</td>";
+					a += "<td>" + val + "</td>";
+					a += "<td>" + barchart(val, "lgreen") +"</td>";
+					a += "</tr>";
+				} else {
+					a += "<tr style='color:grey;'>";
+					a += "<td>" + key + "</td>";
+					a += "<td>" + val + "</td>";
+					a += "<td>" + barchart(val, "grey") +"</td>";
+					a += "</tr>";
+				}
+			}
+		});
+		a+="</table>";
+		return a;
+	}
+
+
+
+	function barchart(val, color){
+		var w= parseInt(val * 100);
+    if (color == 'green')  {
+		  return '<img src="<%=asset_path('point_green.png')%>" height="7" width="'+ w + '"/>';
+    }
+    else if (color=='lgreen') {
+      return '<img src="<%=asset_path('point_lgreen.png')%>" height="7" width="'+ w + '"/>';
+    }
+    else {
+      return '<img src="<%=asset_path('point_grey.png')%>" height="7" width="'+ w + '"/>';
+    }
+	};
+
+
+</script>
+
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-9 col-xs-9">
+				<h2>A Bot Reading Emails</h2>
+				<h4>Reading emails, analyzing personalities, retreiving
+					insights for you.</h4>
+			</div>
+			<div class="col-sm-3 col-xs-3">
+				<a href="/"> <img src="<%= asset_path( 'title.png' )%>"
+					class="img-rounded" style="width: 100%">
+				</a>
+			</div>
+		</div>
+	</div>
+
+
+	<div class="row">
+		<div class="col-sm-1"></div>
+		<div class="col-sm-11"><div id="chart"></div></div>
+	</div>
+
+
+	<br />
+	<br />
+
+	<!-- body started here -->
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-6">
+
+					<h3 id="name1">sender1</h3>
+					<select name="sender1" id="sender1">
+						<option></option>
+						<% @senders.each do |sender| %>
+							<option value="<%=sender%>"> <%=sender%> </option>
+						<% end %>
+					</select>
+					<div id="data1"></div>
+
+			</div>
+			<div class="col-sm-6">
+
+
+					<h3 id="name2">sender2</h3>
+					<select name="sender2" id="sender2">
+						<option></option>
+						<% @senders.each do |sender| %>
+							<option value="<%=sender%>"> <%=sender%> </option>
+						<% end %>
+					</select>
+					<div id="data2"></div>
+
+			</div>
+		</div>
+
+
+
+		<!--  bottom buttons here -->
+		<div class="row">
+			<br />
+			<br />
+			<div class="col-sm-12" style="text-align: center">
+				 <a href="/"><button type="button" id="home"
+						class="btn btn-default" "/>HOME
+					</button></a>
+				<button id="submit" type="button" class="btn btn-default"
+					onclick="javascript:history.back()" />
+				BACK
+				</button>
+			</div>
+		</div>
+	</div>

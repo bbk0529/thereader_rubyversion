@@ -1,26 +1,26 @@
 <script>
-$(document).ready(function(){
-	var num=0;
-	$("input:hidden").each(function(){
-    	console.log($(this).val());
-    	num+=parseInt($(this).val());
-    });
-	$("#wordcount").append("TOTAL WORDS :"+ num);
-	if (num<600) {
-		$("#comment").append("For better result, add more email(s) to sum up to more than 600 words");
-	}
-    $("#callwatson").click(function(){
-    	let text='';
-		$("textarea").each(function(){
-		 	text+=$(this).serialize();
+	$(document).ready(function(){
+		var num=0;
+		$("input:hidden").each(function(){
+	    	console.log($(this).val());
+	    	num+=parseInt($(this).val());
 	    });
-		text = decodeURIComponent(text);
-		let sender=$('#sender').text();
-		let date=$('#date').text();
+		$("#wordcount").append("TOTAL WORDS :"+ num);
+		if (num<600) {
+			$("#comment").append("For better result, add more email(s) to sum up to more than 600 words");
+			}
+	    $("#callwatson").click(function(){
+	    	let text='';
+			$("textarea").each(function(){
+			 	text+=$(this).serialize();
+		  });
+			text = decodeURIComponent(text);
+			let sender=$('#sender').text();
+			let date=$('#date').text();
 
-		watsonNLU(sender, date, text);
-    });
-});
+			watsonNLU(sender, date, text);
+	    });
+	});
 
 
 function children(data){
@@ -33,16 +33,14 @@ function children(data){
 	var cur=0;
 	$.each(data, function(key, val) {
 			cur++;
-			$.each(val, function(key, val) {
-				if(key=="name"){
+
+
 					a +="<tr>";
 					if (cur%7==1) {
-						a +="<td><b>" +  val + "</b></td>";
+						a +="<td><b>" +  key + "</b></td>";
 					} else {
-						a +="<td>" + "_____" + val + "</td>";
+						a +="<td>" + "_____" + key + "</td>";
 					}
-				};
-				if( key=="percentile"){
 					a +="<td>" + val + "</td>";
 					a += "<td>";
 					if (cur%7==1) {
@@ -51,45 +49,54 @@ function children(data){
 						a +=barchart(val);
 					}
 					a +="</td></tr>";
-				};
 			});
-	});
 	a +="</tbody></table></div></div></div>";
 	return a;
 };
 
 function barchart(val){
 	var w= parseInt(val * 200);
-	return '<img src="./resources/img/point_red.png" height="7" width=" '+ w + '"/>';
+	return '<img src="<%= asset_path('point_lgreen.png')%>" height="7" width=" '+ w + '"/>';
 };
 
 function barchart_blue(val){
 	var w= parseInt(val * 200);
-	return '<img src="./resources/img/point_blue.png" height="10" width=" '+ w + '"/>';
+	return '<img src="<%= asset_path('point_green.png')%>" height="10" width=" '+ w + '"/>';
 };
 
-function watsonNLU(sender, date, text){
-	$.ajax({
-		url : "callWatson",
-		type : "POST",
-		data : '&sender=' + sender +'&date=' + date + '&text=' + text,
-		success : function(data) {
-			if(data != null) {
-				console.log(data);
-				var a='';
-				a=children(data);
-				console.log(a);
-				document.getElementById("result").innerHTML = a;
-			} else {
-				alert('data is null');
+	function watsonNLU(sender, date, text){
+		console.log('sender' + sender);
+		console.log('date' + date);
+		console.log('text' + text);
+		text=encodeURI(text)
+		console.log(text)
+
+		/* //console.log('text' + text); */
+		$.ajax({
+			url : "/reader/watson",
+			type : "GET",
+			data : '&sender=' + sender +'&date=' + date + '&text=' + text,
+			success : function(data) {
+				if(data != null) {
+					console.log(data);
+					var a='';
+					a=children(data);
+					console.log(a);
+					document.getElementById("result").innerHTML = a;
+
+
+				} else {
+					alert('data is null');
+				}
+			},
+			error : function(request, status, error) {
+				console.log("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
 			}
-		},
-		error : function(request, status, error) {
-			console.log("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
-		}
-	});
-}
+		});
+	}
 </script>
+
+
 		<div class="row">
 	 	<div class="col-sm-9 col-xs-9">
 	 		<h2> A Bot Reading Emails </h2>

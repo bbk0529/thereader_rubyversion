@@ -1,0 +1,8 @@
+
+applications:
+- services:
+  - personality-insights-service
+  name: thereader.mybluemix.net
+  path: .
+  memory: 256M
+  

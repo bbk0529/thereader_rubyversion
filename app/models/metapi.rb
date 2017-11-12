@@ -1,0 +1,2 @@
+class Metapi < ApplicationRecord
+end

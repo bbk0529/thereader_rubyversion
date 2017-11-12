@@ -1,0 +1,180 @@
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('#callwatson').click(function() {
+			let sender=$('#sender').text();
+			let date=$('#date').text();
+			let text=$('#text').serialize();
+			text = decodeURIComponent(text);
+			watsonNLU(sender, date, text);
+		})
+
+		var num=0;
+		$("input:hidden").each(function(){
+	    	console.log($(this).val());
+	    	num+=parseInt($(this).val());
+	    });
+		$("#wordcount").append("TOTAL WORDS :"+ num);
+		if (num<600) {
+			$("#comment").append("For better result, add more email(s) to sum up to more than 600 words");
+		}
+	})
+
+	function children(data){
+		var a='';
+		a +="<div class='container'><div class='row'><div class='col-xs-12'>";
+		a +="<table class='table'>";
+		a +="<thead><th>PERSONALITY</th><th>PERCENTILE</th><th>GRAPH</th></thead>";
+		a +="<tbody>";
+
+		var cur=0;
+		// $.each(data, function(key, val) {
+		// 		cur++;
+		// 		$.each(val, function(key, val) {
+		// 			if(key=="name"){
+		// 				a +="<tr>";
+		// 				if (cur%7==1) {
+		// 					a +="<td><b>" +  val + "</b></td>";
+		// 				} else {
+		// 					a +="<td>" + "_____" + val + "</td>";
+		// 				}
+		// 			};
+		// 			if( key=="percentile"){
+		// 				a +="<td>" + val + "</td>";
+		// 				a += "<td>";
+		// 				if (cur%7==1) {
+		// 					a +=barchart_blue(val);
+		// 				} else {
+		// 					a +=barchart(val);
+		// 				}
+		// 				a +="</td></tr>";
+		// 			};
+		// 		});
+		// });
+		$.each(data, function(key, val) {
+				cur++;
+
+
+						a +="<tr>";
+						if (cur%7==1) {
+							a +="<td><b>" +  key + "</b></td>";
+						} else {
+							a +="<td>" + "_____" + key + "</td>";
+						}
+						a +="<td>" + val + "</td>";
+						a += "<td>";
+						if (cur%7==1) {
+							a +=barchart_blue(val);
+						} else {
+							a +=barchart(val);
+						}
+						a +="</td></tr>";
+				});
+		a +="</tbody></table></div></div></div>";
+		return a;
+	};
+
+	function barchart(val){
+		var w= parseInt(val * 200);
+		return '<img src="<%= asset_path( 'point_red.png' ) %>" height="7" width=" '+ w + '"/>';
+	};
+
+	function barchart_blue(val){
+		var w= parseInt(val * 200);
+		return '<img src="<%= asset_path( 'point_blue.png' ) %>" height="7" width=" '+ w + '"/>';
+	};
+
+	function watsonNLU(sender, date, text){
+		console.log('sender' + sender);
+		console.log('date' + date);
+		console.log('text' + text);
+		text=encodeURI(text)
+
+		/* //console.log('text' + text); */
+		$.ajax({
+			url : "/reader/watson",
+			type : "GET",
+			data : '&sender=' + sender +'&date=' + date + '&text=' + text,
+			success : function(data) {
+				if(data != null) {
+					console.log(data);
+					var a='';
+					a=children(data);
+					console.log(a);
+					document.getElementById("result").innerHTML = a;
+
+
+				} else {
+					alert('data is null');
+				}
+			},
+			error : function(request, status, error) {
+				console.log("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+			}
+		});
+	}
+
+</script>
+		<div class="row">
+	 	<div class="col-sm-9 col-xs-9">
+	 		<h2> A Bot Reading Emails </h2>
+			<h4> Reading emails, analyzing personalities, retreiving insights for you. </h4>
+	 	</div>
+	 	<div class="col-sm-3 col-xs-3">
+	 		<a href="/">
+	 		<img src="<%= asset_path( 'title.png' ) %>" class="img-rounded" style="width:100%">
+	 		</a>
+	 	</div>
+		</div>
+</div>
+<div class="container">
+	<div class="row">
+	<div class="col-sm-12">
+		<div class="row">
+			<div class="col-sm-3">
+				<h3>SENDER</h3>
+				<p  name="sender" id="sender"><%=@email.sender%></p>
+			</div>
+			<div class="col-sm-2">
+				<h3>DATE</h3>
+				<p  name="date" id="date"><%=@email.date%></p>
+			</div>
+			<div class="col-sm-7">
+				<h3>SUBJECT</h3>
+				<p  name="subject"><%=@email.subject%></p>
+				<input type="hidden" value="<%=@email.wordcount%>">
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-12">
+				<h3>TEXT</h3>
+			</div>
+			<div class="form-group row">
+			<div class="col-xs-12">
+				<textarea class="form-control col-sm-5" id="text" name="text" rows="10" readonly><%=@email.text%></textarea>
+			</div>
+		</div>
+
+		</div>
+		<div class="row">
+			<div class="col-lg-3 col-sm-3" id="wordcount"></div>
+			<div class="col-lg-8 col-sm-9" id="comment"></div>
+		</div>
+	</div>
+	</div>
+	<div class="row">
+			<br/><br/>
+			<div class="col-sm-12" style="text-align: center">
+				<button type="button" class="btn btn-primary"/ id="callwatson"> WATSON</button></>
+				<a href="/"><button type="button" id="home" class="btn btn-default""/>HOME</button></a>
+				<button id="submit" type="button" class="btn btn-default" onclick="javascript:history.back()"/>BACK</button>
+			</div>
+	</div>
+</div>
+
+
+<form name="classify_form" method="post">
+</form>
+<br/><br/>
+<div id="result"></div>
+</body>
+</html>
