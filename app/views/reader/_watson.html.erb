@@ -1,0 +1,188 @@
+<script type="text/javascript">
+	$(document).ready(function() {
+
+		$('#callwatson').click(function() {
+			let sender=$('#sender').text();
+			let date=$('#date').text();
+			let text=$('#text').serialize();
+			// let language =$('#language').val();
+            let language = "<%=@email.language%>"
+			text = decodeURIComponent(text);
+			watsonNLU(sender, date, text, language);
+		})
+
+		var num=0;
+		$("input:hidden").each(function(){
+	    	console.log($(this).val());
+	    	num+=parseInt($(this).val());
+	    });
+		$("#wordcount").append("TOTAL WORDS :"+ num);
+		if (num<600) {
+			$("#comment").append("For better result, add more email(s) to sum up to more than 600 words");
+		}
+	})
+
+	function children(data){
+		var a='';
+		a +="<div class='container'><div class='row'><div class='col-xs-12'>";
+		a +="<table class='table'>";
+		a +="<tbody>";
+
+		a+="<table class='table'>";
+		$.each(data, function(key, val) {
+			if (key !='id' && key!='created_at' && key!='updated_at' && key!='sender') {
+				if (val>0.9){
+					a += "<tr>";
+					a += "<td>" + key + "</td>";
+					a += "<td>" + val + "</td>";
+					a += "<td>" + barchart(val, "green") +"</td>";
+					a += "</tr>";
+				} else if (val>0.7) {
+					a += "<tr>";
+					a += "<td>" + key + "</td>";
+					a += "<td>" + val + "</td>";
+					a += "<td>" + barchart(val, "lgreen") +"</td>";
+					a += "</tr>";
+				} else {
+					a += "<tr style='color:grey;'>";
+					a += "<td>" + key + "</td>";
+					a += "<td>" + val + "</td>";
+					a += "<td>" + barchart(val, "grey") +"</td>";
+					a += "</tr>";
+				}
+			}
+		});
+		a+="</table>";
+		return a;
+	}
+
+
+
+	function barchart(val, color){
+		var w= parseInt(val * 100);
+    if (color == 'green')  {
+		  return '<img src="<%=asset_path('point_green.png')%>" height="7" width="'+ w + '"/>';
+    }
+    else if (color=='lgreen') {
+      return '<img src="<%=asset_path('point_lgreen.png')%>" height="7" width="'+ w + '"/>';
+    }
+    else {
+      return '<img src="<%=asset_path('point_grey.png')%>" height="7" width="'+ w + '"/>';
+    }
+	};
+
+
+	function datainput(data){
+		var arr = new Array();
+		$.each(data, function (key,val){
+			if (key !='id' && key!='created_at' && key!='updated_at') {
+				arr.push(val)
+			};
+		});
+		console.log(arr);
+		return arr;
+	};
+
+	function watsonNLU(sender, date, text, language){
+		console.log('sender' + sender);
+		console.log('date' + date);
+		console.log('text' + text);
+		text=encodeURI(text)
+		console.log(text)
+		token=$("#authenticity_token").val()
+		console.log(token)
+
+		/* //console.log('text' + text); */
+		$.ajax({
+			url : "/reader/watson",
+			type : "post",
+			data : '&sender=' + sender +'&date=' + date + '&text=' + text + '&language=' + language,
+			success : function(data) {
+				if(data != null) {
+					var chart =bb.generate({
+					    "bindto": "#chart",
+					    "data": {
+					        "columns": [
+					        ],
+					        "type": "area-step",
+					        "colors": {
+					          data1: "grey",
+					          data2: "black"
+					        }
+					    },
+
+							"legend": {
+    						"show": false
+  							},
+						"axis": {
+						    "x": {
+						      "type": "category",
+									"tick": {
+        								"rotate": 90,
+        								"multiline": false
+      							},
+									"height": 130,
+						      "categories": [
+						    	 			"개방성",
+									        "모험성",
+									        "예술적 흥미",
+									        "정서성",
+									        "상상력",
+									        "지력",
+									        "권력에 저항",
+									        "성실성",
+									        "성취 추구",
+									        "신중함",
+									        "순종성",
+									        "질서 정연함",
+									        "자기 훈련",
+									        "자기 효능감",
+									        "외향성",
+									        "활동 레벨",
+									        "자신만만함",
+									        "쾌활",
+									        "자극 탐색",
+									        "외향적",
+									        "사교적",
+									        "친화성",
+									        "이타성",
+									        "협동성",
+									        "겸손함",
+									        "비타협성",
+									        "동정",
+									        "신뢰",
+									        "감정의 기복",
+									        "급한",
+									        "걱정이 많은",
+									        "우울한",
+									        "극단적인",
+									        "자의식이 강한",
+									        "스트레스에 민감한"
+						      ]
+						    }
+					 }
+					}); // var chart
+
+					console.log(data);
+					var a='';
+					a=children(data);
+					console.log(a);
+					document.getElementById("result").innerHTML = a;
+					data=datainput(data);
+					chart.category(2, "Category 3");
+					chart.load({
+					    columns: [
+					       data
+					   ]
+					 }); // chart.load
+				} else {
+					alert('data is null');
+				}
+			},
+			error : function(request, status, error) {
+				console.log("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+			}
+		});
+	}
+
+    </script>

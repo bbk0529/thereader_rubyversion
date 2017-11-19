@@ -1,0 +1,46 @@
+
+<script>
+$(document).ready(function() {
+
+    $("#sender").change(function(){
+    	$(location).attr('href','/reader/searchdata?keyword=' + $('#sender').val());
+    })
+
+    $("#emaildate").change(function(){
+    	$(location).attr('href','/reader/searchdata?keyword=' + $('#emaildate').val());
+    })
+
+
+	$('#keyword').keypress(function(e){
+		if (e.which === 13){
+			if ($('#keyword').val()=='') {
+					alert('please enter your keyword(s)');
+			}
+			else
+				$(location).attr('href','/reader/searchdata?keyword=' + $('#keyword').val());
+		}
+	});
+
+    $("#search").click(function() {
+		$(location).attr('href','/reader/searchdata?keyword=' + $('#keyword').val());
+    });
+
+    $("#multidetail").click(function() {
+    	let param="";
+    	var i=0;
+		$(".chkclass :checked").each(function(){
+			param+=$(this).val() + ',';
+			i++;
+		});
+		if (i<2) {
+			alert('Needs at least 2 emails for merging');
+		}	else {
+				$(location).attr('href','multidetail?param=' + param);
+	    	}
+    });
+    $('#chkall').click(function () {
+        $('input:checkbox').prop('checked', this.checked);
+    });
+
+});
+</script>

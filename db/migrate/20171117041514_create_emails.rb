@@ -6,6 +6,7 @@ class CreateEmails < ActiveRecord::Migration[5.1]
       t.text :text
       t.date :date
       t.integer :wordcount
+      t.string :language
       t.timestamps
     end
   end

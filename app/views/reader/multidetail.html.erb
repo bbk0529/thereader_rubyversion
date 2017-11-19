@@ -97,17 +97,7 @@ function barchart_blue(val){
 </script>
 
 
-		<div class="row">
-	 	<div class="col-sm-9 col-xs-9">
-	 		<h2> A Bot Reading Emails </h2>
-			<h4> Reading emails, analyzing personalities, retreiving insights for you. </h4>
-	 	</div>
-	 	<div class="col-sm-3 col-xs-3">
-	 		<a href="/">
-	 		<img src="<%= asset_path( 'title.png' ) %>" class="img-rounded" style="width:100%">
-	 		</a>
-	 	</div>
-		</div>
+<%= render 'header' %>
 
 		<% @emails.each do |email| %>
 		<%=@emails.size%>

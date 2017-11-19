@@ -1,12 +1,11 @@
 class ReaderController < ApplicationController
-
+    protect_from_forgery
 
   def index
   end
 
   def import
   end
-
 
   def readPI
     sender=Metapi.find_by(sender: params['sender'])
@@ -15,25 +14,30 @@ class ReaderController < ApplicationController
     render :json => @PI
   end
 
+  def destroy
+      Email.find(params[:id]).destroy
+      redirect_to '/reader/searchdata'
+
+
+  end
+
   def detail
-    @email = Email.find_by(id: params['id'])
+    @email = Email.find(params['id'])
   end
 
   def watson
-        p '==========WATSON IN READER_CONTROLLER.RB================'
        @url="https://gateway.watsonplatform.net/personality-insights/api"
        @username="67b30adf-0dfd-4fcb-a80d-8b6c26813a26"
        @password="5WBfpVJag0Co"
-       @input="한글 왓슨을 하하하 이거 정말 왜 이런지 모르겠네요. 테스트 중입니다.한글 왓슨을 하하하 이거 정말 왜 이런지 모르겠네요. 테스트 중입니다.한글 왓슨을 하하하 이거 정말 왜 이런지 모르겠네요. 테스트 중입니다.한글 왓슨을 하하하 이거 정말 왜 이런지 모르겠네요. 테스트 중입니다.한글 왓슨을 하하하 이거 정말 왜 이런지 모르겠네요. 테스트 중입니다.한글 왓슨을 하하하 이거 정말 왜 이런지 모르겠네요. 테스트 중입니다.한글 왓슨을 하하하 이거 정말 왜 이런지 모르겠네요. 테스트 중입니다.한글 왓슨을 하하하 이거 정말 왜 이런지 모르겠네요. 테스트 중입니다.한글 왓슨을 하하하 이거 정말 왜 이런지 모르겠네요. 테스트 중입니다.한글 왓슨을 하하하 이거 정말 왜 이런지 모르겠네요. 테스트 중입니다.한글 왓슨을 하하하 이거 정말 왜 이런지 모르겠네요. 테스트 중입니다.한글 왓슨을 하하하 이거 정말 왜 이런지 모르겠네요. 테스트 중입니다.한글 왓슨을 하하하 이거 정말 왜 이런지 모르겠네요. 테스트 중입니다.한글 왓슨을 하하하 이거 정말 왜 이런지 모르겠네요. 테스트 중입니다.한글 왓슨을 하하하 이거 정말 왜 이런지 모르겠네요. 테스트 중입니다.한글 왓슨을 하하하 이거 정말 왜 이런지 모르겠네요. 테스트 중입니다.한글 왓슨을 하하하 이거 정말 왜 이런지 모르겠네요. 테스트 중입니다.한글 왓슨을 하하하 이거 정말 왜 이런지 모르겠네요. 테스트 중입니다.한글 왓슨을 하하하 이거 정말 왜 이런지 모르겠네요. 테스트 중입니다."
-       #@input = params['text']
-       p @input
+       @input = params['text']
+       @language =params['language']
 
       response = Excon.post(@url + "/v3/profile",
       :body     => @input,
       :headers  => {
         "Content-Type"            => "text/plain",
-        "Content-Language"        => "ko",
-        "Accept-Language"         => "en"
+        "Content-Language"        =>  @language,
+        "Accept-Language"         => "ko"
       },
       :query    => {
         "raw_scores"              => true,
@@ -91,10 +95,6 @@ class ReaderController < ApplicationController
       p row.sender
       @senders.push(row.sender)
     end
-
-    p '====================='
-    p @senders
-    p '====================='
   end
 
   def insert_email
@@ -103,12 +103,14 @@ class ReaderController < ApplicationController
     @subject=params['subject']
     @text=params['text']
     @wordcount = @text.split.size
+    @language=params['langauge']
     Email.create(
       sender: @sender,
       date: @date,
       subject: @subject,
       text: @text,
-      wordcount: @wordcount
+      wordcount: @wordcount,
+      language: @language
     )
     redirect_to "/"
   end

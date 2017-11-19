@@ -6,18 +6,19 @@ Rails.application.routes.draw do
 
   get 'reader/insert'
 
-  get 'reader/insert_email'
+  post 'reader/insert_email'
 
   get 'reader/searchdata'
 
   get 'reader/summary'
 
   get 'reader/multidetail'
-  get 'reader/watson'
+  post 'reader/watson'
 
 
   get 'reader/import'
   get 'reader/readPI'
-  resources :watson
+  get 'reader/destroy/:id' => 'reader#destroy'
+  #resources :watson
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end

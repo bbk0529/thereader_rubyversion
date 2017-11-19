@@ -12,54 +12,53 @@ var data1 = new Array();
 		        "columns": [
 		        ]
 		    },
-
 		    "legend": {
-		        "position": "right"
+		        "position": "bottom"
 		     },
-			"axis": {
+				 "axis": {
 			    "x": {
 			      "type": "category",
 						"tick": {
 									"rotate": 90,
 									"multiline": false
 							},
-			      "categories": [
-			    	"Openness",
-			    	"Adventurousness",
-			    	"Artistic_interests",
-			    	"Emotionality",
-			    	"Imagination",
-			    	"Intellect",
-			    	"Authority_challenging",
-			    	"Conscientiousness",
-			    	"Achievement_striving",
-			    	"Cautiousness",
-			    	"Dutifulness",
-			    	"Orderliness",
-			    	"Self_discipline",
-			    	"Self_efficacy",
-			    	"Extraversion",
-			    	"Activity_level",
-			    	"Assertiveness",
-			    	"Cheerfulness",
-			    	"Excitement_seeking",
-			    	"Outgoing",
-			    	"Gregariousness",
-			    	"Agreeableness",
-			    	"Altruism",
-			    	"Cooperation",
-			    	"Modesty",
-			    	"Uncompromising",
-			    	"Sympathy",
-			    	"Trust",
-			    	"Emotional_range",
-			    	"Fiery",
-			    	"Prone_to_worry",
-			    	"Melancholy",
-			    	"Immoderation",
-			    	"Self_consciousness",
-			    	"Susceptible_to_stress"
-			      ]
+			     "categories": [
+						    	 			"개방성",
+									        "모험성",
+									        "예술적흥미",
+									        "정서성",
+									        "상상력",
+									        "지력",
+									        "권력에 저항",
+									        "성실성",
+									        "성취 추구",
+									        "신중함",
+									        "순종성",
+									        "질서 정연함",
+									        "자기 훈련",
+									        "자기 효능감",
+									        "외향성",
+									        "활동 레벨",
+									        "자신만만함",
+									        "쾌활",
+									        "자극 탐색",
+									        "외향적",
+									        "사교적",
+									        "친화성",
+									        "이타성",
+									        "협동성",
+									        "겸손함",
+									        "비타협성",
+									        "동정",
+									        "신뢰",
+									        "감정의 기복",
+									        "급한",
+									        "걱정이 많은",
+									        "우울한",
+									        "극단적인",
+									        "자의식이 강한",
+									        "스트레스에 민감한"
+						      ]
 			    }
 		 }
 		}); // var chart
@@ -91,7 +90,6 @@ var data1 = new Array();
 
 				if (window=="data1") { data1=datainput(data);};
 				if (window=="data2") { data2=datainput(data);};
-				chart.category(2, "Category 3");
 				chart.load({
 				    columns: [
 				       data1,
@@ -166,24 +164,10 @@ var data1 = new Array();
 
 </script>
 
-	<div class="container">
-		<div class="row">
-			<div class="col-sm-9 col-xs-9">
-				<h2>A Bot Reading Emails</h2>
-				<h4>Reading emails, analyzing personalities, retreiving
-					insights for you.</h4>
-			</div>
-			<div class="col-sm-3 col-xs-3">
-				<a href="/"> <img src="<%= asset_path( 'title.png' )%>"
-					class="img-rounded" style="width: 100%">
-				</a>
-			</div>
-		</div>
-	</div>
+	<%= render 'header' %>
 
 
 	<div class="row">
-		<div class="col-sm-1"></div>
 		<div class="col-sm-11"><div id="chart"></div></div>
 	</div>
 
@@ -228,11 +212,9 @@ var data1 = new Array();
 			<br />
 			<br />
 			<div class="col-sm-12" style="text-align: center">
-				 <a href="/"><button type="button" id="home"
-						class="btn btn-default" "/>HOME
+				 <a href="/"><button type="button" id="home" class="btn btn-default" />HOME
 					</button></a>
-				<button id="submit" type="button" class="btn btn-default"
-					onclick="javascript:history.back()" />
+				<button id="submit" type="button" class="btn btn-default" 	onclick="javascript:history.back()" />
 				BACK
 				</button>
 			</div>
