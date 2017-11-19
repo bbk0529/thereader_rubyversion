@@ -1,24 +1,10 @@
 <%= render 'watson' %>
 <%= render 'header' %>
 
-		<% @emails.each do |email| %>
-		<%=email.id%>
-		<div class="row"><div class="col-sm-12"><h4><%=email.subject%></h4></div></div>
-		<div class="row">
-			<div class="col-sm-1">
-				<h5>SENDER</h5>
-				<h5>DATE</h5>
-				<h5>WORD</h5>
-				<h5>REMARK</h5>
-			</div>
-			<div class="col-sm-3">
-				<h5 id="sender"><%=email.sender%></h5>
-				<h5 id="date"><%=email.date%></h5>
-				<h5 class="wordcount"><%=email.wordcount%></h5>
-				<h5>ENGLISH</h5>
-				<input type="hidden" value="<%=email.wordcount%>">
-			</div>
-			<div class="col-sm-8"><div class="form-group row"><textarea class="form-control col-sm-6" id="text" name="text" rows="10" readonly><%=email.text%></textarea></div></div>
-		</div>
-		<% end %>
-		<%= render 'detailfoot'%>
+<% @emails.each do |email| %>
+	<%=email.id%>
+	<% @email = email %>
+	<%= render 'detail'%>
+<% end %>
+
+<%= render 'detailfoot'%>
