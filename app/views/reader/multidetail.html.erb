@@ -1,106 +1,8 @@
-<script>
-	$(document).ready(function(){
-		var num=0;
-		$("input:hidden").each(function(){
-	    	console.log($(this).val());
-	    	num+=parseInt($(this).val());
-	    });
-		$("#wordcount").append("TOTAL WORDS :"+ num);
-		if (num<600) {
-			$("#comment").append("For better result, add more email(s) to sum up to more than 600 words");
-			}
-	    $("#callwatson").click(function(){
-	    	let text='';
-			$("textarea").each(function(){
-			 	text+=$(this).serialize();
-		  });
-			text = decodeURIComponent(text);
-			let sender=$('#sender').text();
-			let date=$('#date').text();
-
-			watsonNLU(sender, date, text);
-	    });
-	});
-
-
-function children(data){
-	var a='';
-	a +="<div class='container'><div class='row'><div class='col-xs-12'>";
-	a +="<table class='table'>";
-	a +="<thead><th>PERSONALITY</th><th>PERCENTILE</th><th>GRAPH</th></thead>";
-	a +="<tbody>";
-
-	var cur=0;
-	$.each(data, function(key, val) {
-			cur++;
-
-
-					a +="<tr>";
-					if (cur%7==1) {
-						a +="<td><b>" +  key + "</b></td>";
-					} else {
-						a +="<td>" + "_____" + key + "</td>";
-					}
-					a +="<td>" + val + "</td>";
-					a += "<td>";
-					if (cur%7==1) {
-						a +=barchart_blue(val);
-					} else {
-						a +=barchart(val);
-					}
-					a +="</td></tr>";
-			});
-	a +="</tbody></table></div></div></div>";
-	return a;
-};
-
-function barchart(val){
-	var w= parseInt(val * 200);
-	return '<img src="<%= asset_path('point_lgreen.png')%>" height="7" width=" '+ w + '"/>';
-};
-
-function barchart_blue(val){
-	var w= parseInt(val * 200);
-	return '<img src="<%= asset_path('point_green.png')%>" height="10" width=" '+ w + '"/>';
-};
-
-	function watsonNLU(sender, date, text){
-		console.log('sender' + sender);
-		console.log('date' + date);
-		console.log('text' + text);
-		text=encodeURI(text)
-		console.log(text)
-
-		/* //console.log('text' + text); */
-		$.ajax({
-			url : "/reader/watson",
-			type : "GET",
-			data : '&sender=' + sender +'&date=' + date + '&text=' + text,
-			success : function(data) {
-				if(data != null) {
-					console.log(data);
-					var a='';
-					a=children(data);
-					console.log(a);
-					document.getElementById("result").innerHTML = a;
-
-
-				} else {
-					alert('data is null');
-				}
-			},
-			error : function(request, status, error) {
-				console.log("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
-			}
-		});
-	}
-</script>
-
-
+<%= render 'watson' %>
 <%= render 'header' %>
 
 		<% @emails.each do |email| %>
-		<%=@emails.size%>
+		<%=email.id%>
 		<div class="row"><div class="col-sm-12"><h4><%=email.subject%></h4></div></div>
 		<div class="row">
 			<div class="col-sm-1">
@@ -119,19 +21,4 @@ function barchart_blue(val){
 			<div class="col-sm-8"><div class="form-group row"><textarea class="form-control col-sm-6" id="text" name="text" rows="10" readonly><%=email.text%></textarea></div></div>
 		</div>
 		<% end %>
-
-		<div class="row">
-			<div class="col-lg-3 col-sm-3" id="wordcount"></div>
-			<div class="col-lg-8 col-sm-9" id="comment"></div>
-		</div>
-
-		<div class="row">
-			<br/><br/>
-			<div class="col-sm-12" style="text-align: center">
-				<button type="button" class="btn btn-primary"/ id="callwatson"> WATSON</button></>
-				<a href="/"><button type="button" id="home" class="btn btn-default"/>HOME</button></a>
-				<button id="submit" type="button" class="btn btn-default" onclick="javascript:history.back()"/>BACK</button>
-			</div>
-	</div>
-<br/><br/>
-<div id="result"></div>
+		<%= render 'detailfoot'%>

@@ -79,7 +79,9 @@ class ReaderController < ApplicationController
   end
 
   def multidetail
+
     @ids=params['param'].split(',').to_a
+    @email=Email.find(@ids[0])
     @emails=Email.where(id: @ids)
     @emails.each do |email|
       p email
